@@ -28,7 +28,7 @@ dart run ios_preflight
 - `0.3.0` — `Info.plist` usage-description check
 - Later — deployment target consistency, provisioning profile expiry, privacy manifest, Podfile.lock, simulator arch
 
-See [`ios_preflight_package_plan.md`](https://github.com/nayansoni-Application/ios_preflight) for the full design.
+See `ios_preflight_package_plan.md` for the full design.
 
 ## License
 
