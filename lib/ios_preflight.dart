@@ -4,7 +4,12 @@
 library;
 
 export 'src/checks/check.dart';
+export 'src/checks/info_plist_check.dart';
 export 'src/checks/xcode_sdk_check.dart';
 export 'src/data/apple_sdk_requirements.dart';
+export 'src/data/permission_plugins.dart';
 export 'src/ios_preflight_base.dart';
+export 'src/util/info_plist_reader.dart';
+export 'src/util/project_root.dart';
+export 'src/util/pubspec_lock_reader.dart';
 export 'src/util/xcode_version.dart';

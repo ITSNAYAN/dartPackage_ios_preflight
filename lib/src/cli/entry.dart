@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import '../checks/check.dart';
+import '../checks/info_plist_check.dart';
 import '../checks/xcode_sdk_check.dart';
 import '../ios_preflight_base.dart';
 import 'reporter.dart';
@@ -20,6 +21,7 @@ Future<int> runCli(List<String> args) async {
   final runner = PreflightRunner(
     checks: <Check>[
       XcodeSdkCheck(),
+      InfoPlistCheck(),
     ],
     reporter: reporter,
   );
