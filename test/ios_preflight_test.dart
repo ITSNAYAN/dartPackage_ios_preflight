@@ -4,6 +4,6 @@ import 'package:test/test.dart';
 
 void main() {
   test('exposes a version string matching pubspec', () {
-    expect(iosPreflightVersion, '0.1.0');
+    expect(iosPreflightVersion, '1.0.0');
   });
 }
