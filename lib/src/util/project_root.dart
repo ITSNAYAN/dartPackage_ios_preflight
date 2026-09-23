@@ -10,11 +10,15 @@ class FlutterProject extends ProjectRoot {
   final String rootPath;
   final String pubspecLockPath;
   final String infoPlistPath;
+  final String podfilePath;
+  final String pbxprojPath;
 
   const FlutterProject({
     required this.rootPath,
     required this.pubspecLockPath,
     required this.infoPlistPath,
+    required this.podfilePath,
+    required this.pbxprojPath,
   });
 }
 
@@ -34,6 +38,8 @@ ProjectRoot inspectProjectRoot(String directoryPath) {
   final pubspecYaml = '$directoryPath/pubspec.yaml';
   final pubspecLock = '$directoryPath/pubspec.lock';
   final infoPlist = '$directoryPath/ios/Runner/Info.plist';
+  final podfile = '$directoryPath/ios/Podfile';
+  final pbxproj = '$directoryPath/ios/Runner.xcodeproj/project.pbxproj';
 
   if (!File(pubspecYaml).existsSync()) {
     return const NotAFlutterIosProject(
@@ -56,5 +62,7 @@ ProjectRoot inspectProjectRoot(String directoryPath) {
     rootPath: directoryPath,
     pubspecLockPath: pubspecLock,
     infoPlistPath: infoPlist,
+    podfilePath: podfile,
+    pbxprojPath: pbxproj,
   );
 }

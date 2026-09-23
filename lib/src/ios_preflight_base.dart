@@ -1,1 +1,1 @@
-const iosPreflightVersion = '1.0.0';
+const iosPreflightVersion = '1.2.0';

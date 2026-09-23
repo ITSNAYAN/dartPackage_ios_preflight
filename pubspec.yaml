@@ -1,6 +1,6 @@
 name: ios_preflight
 description: A Flutter dev-dependency CLI that validates a project's iOS submission readiness before you build or open Xcode.
-version: 1.0.0
+version: 1.2.0
 repository: https://github.com/ITSNAYAN/dartPackage_ios_preflight
 issue_tracker: https://github.com/ITSNAYAN/dartPackage_ios_preflight/issues
 

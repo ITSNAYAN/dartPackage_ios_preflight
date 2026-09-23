@@ -2,10 +2,12 @@
 
 A Flutter dev-dependency CLI that validates a project's iOS submission readiness **before** you build or open Xcode.
 
-Catches the two most common reasons an iOS build fails at the App Store Connect upload step:
+Catches the most common reasons an iOS build fails at CocoaPods, archive, or App Store Connect upload:
 
 - **Xcode / SDK below Apple's current minimum** (or a *beta* Xcode being used for App Store distribution — which Apple rejects at review)
 - **Missing `Info.plist` usage descriptions** for permission-requiring plugins detected in `pubspec.lock` (camera, photos, location, contacts, Bluetooth, microphone, motion, NFC, biometrics, …)
+- **Deployment target inconsistencies** between `ios/Podfile`, `project.pbxproj` build configurations, and Flutter's own iOS floor
+- **Expired (or soon-to-expire) provisioning profiles** matched to the app's bundle identifier — warns 30 days before expiry, fails on already-expired profiles
 
 Runs in seconds. Zero setup beyond `flutter pub get`.
 
@@ -15,7 +17,7 @@ Add as a dev-dependency:
 
 ```yaml
 dev_dependencies:
-  ios_preflight: ^1.0.0
+  ios_preflight: ^1.2.0
 ```
 
 Then:
@@ -62,6 +64,22 @@ Exit code `1` if any check fails — safe to use as a CI gate before `flutter bu
 - Parses `ios/Runner/Info.plist` via `plutil -convert json` (handles both XML and binary plists).
 - Fails if a required key is missing OR present-but-empty (Apple still rejects empty purpose strings).
 
+### 3. Deployment target consistency
+
+- Reads the `platform :ios, 'X.Y'` line from `ios/Podfile` (respects single- and double-quoted variants; ignores commented-out lines).
+- Reads every `IPHONEOS_DEPLOYMENT_TARGET` entry from `ios/Runner.xcodeproj/project.pbxproj`, pairing each with its build configuration name.
+- Cross-references against a bundled table of Flutter's own iOS deployment target policy.
+- **Fails** if Podfile disagrees with pbxproj, or if any target is below Flutter's current floor.
+- **Warns** if pbxproj build configurations (Debug / Release / Profile) disagree with each other — works locally but breaks in CI.
+
+### 4. Provisioning profile expiry
+
+- Lists every `.mobileprovision` in `~/Library/MobileDevice/Provisioning Profiles/`.
+- Decodes each via `security cms -D -i` + `plutil -convert json`; extracts name, `ExpirationDate`, and the profile's `application-identifier` entitlement.
+- Filters to profiles matching this app's bundle identifier (wildcard `com.example.*` supported).
+- **Fails** on expired matching profiles, **warns** at <30 days from expiry.
+- **Skips** cleanly when Xcode automatic signing is enabled, or when no local profiles are found (typical of CI).
+
 ## Exit codes
 
 | Code | Meaning |
@@ -74,12 +92,14 @@ Exit code `1` if any check fails — safe to use as a CI gate before `flutter bu
 
 Per the [package plan](ios_preflight_package_plan.md):
 
-- **v1.1** — Deployment target consistency (`Podfile` vs `project.pbxproj`), provisioning profile expiry, dynamic `permission_handler` source-scan
-- **v1.2+** — Privacy manifest (`PrivacyInfo.xcprivacy`), `Podfile.lock` conflicts, Apple Silicon simulator arch
+- **v1.1** — Deployment target consistency ✅
+- **v1.2** (this release) — Provisioning profile expiry ✅
+- **v1.2.x** — Code signing certificate expiry, dynamic `permission_handler` source-scan
+- **v1.3+** — Privacy manifest (`PrivacyInfo.xcprivacy`), `Podfile.lock` conflicts, Apple Silicon simulator arch
 
 ## Contributing
 
-The permission plugin mapping ([`lib/src/data/permission_plugins.dart`](lib/src/data/permission_plugins.dart)) and the Apple SDK deadline table ([`lib/src/data/apple_sdk_requirements.dart`](lib/src/data/apple_sdk_requirements.dart)) are **living data** — PRs adding new plugins or new Apple deadlines are welcome.
+The permission plugin mapping ([`lib/src/data/permission_plugins.dart`](lib/src/data/permission_plugins.dart)), the Apple SDK deadline table ([`lib/src/data/apple_sdk_requirements.dart`](lib/src/data/apple_sdk_requirements.dart)), and the Flutter iOS floor table ([`lib/src/data/flutter_ios_minimums.dart`](lib/src/data/flutter_ios_minimums.dart)) are **living data** — PRs adding new plugins, new Apple deadlines, or new Flutter minimums are welcome.
 
 ## License
 

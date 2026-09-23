@@ -81,16 +81,16 @@ Exit code `1` if any check fails — safe to use as a CI gate.
 
 ## 7. Roadmap
 
-### v1.0 — Minimum viable, ship first
+### ✅ v1.0 — Minimum viable, ship first *(shipped)*
 Focus on the two checks with the best effort-to-payoff ratio:
-- **Info.plist usage-description validation** (#2) — highest real-world rejection-rate payoff, no external tool-shelling required.
-- **Xcode / SDK deadline check** (#7) — simple version comparison against a bundled table; directly solves the founding use case.
+- ✅ **Info.plist usage-description validation** (#2) — highest real-world rejection-rate payoff, no external tool-shelling required. *Shipped in 1.0.0 with a bundled mapping of 24+ permission-requiring plugins (federated variants included), transitive-dep coverage via `pubspec.lock`, and `plutil -convert json` for both XML and binary plists.*
+- ✅ **Xcode / SDK deadline check** (#7) — simple version comparison against a bundled table; directly solves the founding use case. *Shipped in 1.0.0 with beta-vs-release detection (via `LicenseInfo.plist`'s `licenseType`), a 90-day upcoming-deadline warn window, and an explicit TestFlight-accepted / App-Store-rejected split for beta Xcodes.*
 
 Goal: get a small, reliable tool in front of 5–10 real users and gather feedback before expanding scope.
 
-### v1.1 — First iteration, based on early feedback
-- **Deployment target consistency check** (#1) — cheap to add, very common source of confusion.
-- **Signing certificate / provisioning profile expiry check** (#6) — high pain when it hits, straightforward to implement.
+### v1.1 — First iteration, based on early feedback *(in progress)*
+- ✅ **Deployment target consistency check** (#1) — cheap to add, very common source of confusion. *Shipped in 1.1.0. Cross-references `ios/Podfile`, every `IPHONEOS_DEPLOYMENT_TARGET` in `project.pbxproj` (paired with its build-config name), and a bundled Flutter iOS-floor table. Precedence: below-Flutter-floor fails, Podfile ≠ pbxproj fails, pbxproj configs disagreeing with each other warns.*
+- ⏳ **Signing certificate / provisioning profile expiry check** (#6) — high pain when it hits, straightforward to implement.
 
 ### v1.2+ — Later, only if v1.1 gains traction
 - Privacy manifest check (#3)

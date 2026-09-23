@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import '../checks/check.dart';
+import '../checks/deployment_target_check.dart';
 import '../checks/info_plist_check.dart';
+import '../checks/signing_expiry_check.dart';
 import '../checks/xcode_sdk_check.dart';
 import '../ios_preflight_base.dart';
 import 'reporter.dart';
@@ -22,6 +24,8 @@ Future<int> runCli(List<String> args) async {
     checks: <Check>[
       XcodeSdkCheck(),
       InfoPlistCheck(),
+      DeploymentTargetCheck(),
+      SigningExpiryCheck(),
     ],
     reporter: reporter,
   );

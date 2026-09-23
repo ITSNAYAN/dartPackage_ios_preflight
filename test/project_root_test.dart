@@ -38,7 +38,8 @@ void main() {
       expect((result as NotAFlutterIosProject).reason, contains('Info.plist'));
     });
 
-    test('returns FlutterProject with all three paths when all present', () {
+    test('returns FlutterProject with all paths when required files present',
+        () {
       File('${tmp.path}/pubspec.yaml').writeAsStringSync('name: sample\n');
       File('${tmp.path}/pubspec.lock').writeAsStringSync('packages: {}\n');
       Directory('${tmp.path}/ios/Runner').createSync(recursive: true);
@@ -50,6 +51,9 @@ void main() {
       expect(project.rootPath, tmp.path);
       expect(project.pubspecLockPath, endsWith('/pubspec.lock'));
       expect(project.infoPlistPath, endsWith('/ios/Runner/Info.plist'));
+      expect(project.podfilePath, endsWith('/ios/Podfile'));
+      expect(project.pbxprojPath,
+          endsWith('/ios/Runner.xcodeproj/project.pbxproj'));
     });
   });
 }
